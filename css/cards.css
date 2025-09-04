@@ -1,0 +1,64 @@
+ 
+.card .card-title a {
+  font-size: 24px;
+  color: #ffab40;
+  margin-right: 20px;
+  -webkit-transition: color .3s ease;
+  -moz-transition: color .3s ease;
+  -o-transition: color .3s ease;
+  -ms-transition: color .3s ease;
+  transition: color .3s ease;
+  text-transform: uppercase;
+}
+
+.card .card-title a:hover {
+  color: #ffd8a6;
+}
+
+.card .card-content a {
+  font-size: 24px;
+  color: #ffab40;
+  margin-right: 20px;
+  -webkit-transition: color .3s ease;
+  -moz-transition: color .3s ease;
+  -o-transition: color .3s ease;
+  -ms-transition: color .3s ease;
+  transition: color .3s ease;
+  text-transform: uppercase;
+}
+
+.card .card-content a:hover {
+  color: #ffd8a6;
+}
+
+
+.card .card-image img {
+  opacity: 1.0;
+  -webkit-transition: opacity .3s ease-in-out;
+  -moz-transition: opacity .3s ease-in-out;
+  -o-transition: opacity .3s ease-in-out;
+  -ms-transition: opacity .3s ease-in-out;
+  transition: opacity .3s ease-in-out;
+}
+
+.card .card-image img:hover {
+  opacity: 0.4;
+}
+
+.card .card-image-service img {
+  position: relative;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 30%;
+  opacity: 1.0;
+  -webkit-transition: opacity .3s ease-in-out;
+  -moz-transition: opacity .3s ease-in-out;
+  -o-transition: opacity .3s ease-in-out;
+  -ms-transition: opacity .3s ease-in-out;
+  transition: opacity .3s ease-in-out;
+}
+
+.card .card-image-service img:hover {
+  opacity: 0.4;
+}

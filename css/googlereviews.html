@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Google Reviews Widget</title>
+  <style>
+    :root {
+      --card-bg:#fff;
+      --card-border:#eee;
+      --text:#1a1a1a;
+      --muted:#6b7280;
+      --brand:#ff6b00; /* your brand accent if you want */
+      --shadow:0 6px 24px rgba(0,0,0,.06);
+      --radius:14px;
+    }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; color:var(--text); }
+
+    /* Wrapper */
+    .grw { max-width: 1200px; margin: 40px auto; padding: 0 16px; }
+    .grw-header {
+      display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:14px;
+      flex-wrap:wrap;
+    }
+    .grw-title { font-size: clamp(20px, 2.2vw, 28px); font-weight: 700; }
+    .grw-cta {
+      display:flex; gap:10px; align-items:center;
+      flex-wrap:wrap;
+    }
+    .grw-btn {
+      display:inline-flex; align-items:center; gap:8px; border-radius:999px;
+      padding: 10px 16px; font-weight:600; border:1px solid #ddd; background:#fafafa; cursor:pointer;
+      text-decoration:none; color:inherit;
+    }
+    .grw-btn:hover { background:#f2f2f2; }
+    .grw-powered { font-size:12px; color:var(--muted); }
+
+    /* Rating summary */
+    .grw-summary { display:flex; align-items:center; gap:12px; }
+    .grw-stars { display:inline-flex; vertical-align:middle; }
+    .grw-stars svg { width:18px; height:18px; }
+    .grw-score { font-weight:700; margin-left:6px; }
+    .grw-count { color:var(--muted); }
+
+    /* Carousel pages */
+    .grw-viewport { overflow:hidden; position:relative; }
+    .grw-track {
+      display:flex; transition: transform .45s ease; will-change: transform;
+    }
+    .grw-page {
+      flex:0 0 100%;
+      padding: 6px;
+    }
+    .grw-grid {
+      display:grid; gap:16px;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+    }
+    @media (max-width: 1024px){ .grw-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    @media (max-width: 640px){ .grw-grid { grid-template-columns: 1fr; } }
+
+    /* Review card */
+    .grw-card {
+      background:var(--card-bg); border:1px solid var(--card-border); border-radius:var(--radius);
+      box-shadow: var(--shadow);
+      padding:18px; display:flex; flex-direction:column; gap:12px; min-height: 210px;
+    }
+    .grw-card-head { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .grw-card-stars { display:flex; align-items:center; gap:6px; }
+    .grw-time { color:var(--muted); font-size:12px; white-space:nowrap; }
+    .grw-text { color:#222; line-height:1.55; }
+    .grw-text[data-clamped="true"] {
+      display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden;
+    }
+    .grw-more { color:#2563eb; font-weight:600; cursor:pointer; user-select:none; }
+    .grw-author { display:flex; align-items:center; gap:10px; margin-top:auto; }
+    .grw-avatar {
+      width:36px; height:36px; border-radius:50%; object-fit:cover; border:1px solid #ddd; background:#f2f2f2;
+    }
+    .grw-name { font-weight:600; }
+    .grw-dots {
+      display:flex; gap:8px; justify-content:center; align-items:center; margin-top:12px;
+      user-select:none;
+    }
+    .grw-dot { width:8px; height:8px; border-radius:999px; background:#ddd; cursor:pointer; }
+    .grw-dot[aria-current="true"] { background:#111; width:22px; border-radius:999px; }
+  </style>
+</head>
+<body>
+  <section class="grw" id="google-reviews">
+    <div class="grw-header">
+      <div class="grw-title">Here is what our customers say</div>
+      <div class="grw-cta">
+        <a class="grw-btn" id="grw-open-on-google" target="_blank" rel="noopener">Open on Google</a>
+        <a class="grw-btn" id="grw-write-review" target="_blank" rel="noopener">Write a review</a>
+      </div>
+    </div>
+
+    <div class="grw-summary" id="grw-summary" aria-live="polite"></div>
+
+    <div class="grw-viewport" id="grw-viewport" aria-roledescription="carousel">
+      <div class="grw-track" id="grw-track"></div>
+    </div>
+    <div class="grw-dots" id="grw-dots" role="tablist" aria-label="Review pages"></div>
+
+    <div class="grw-powered">Reviews provided by Google Maps. Author attributions are shown per review. </div>
+  </section>
+
+  <!-- Official bootstrap loader for Maps JS API -->
+  <script>
+    (g => { var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
+      key: "YOUR_API_KEY",
+      v: "weekly"
+    });
+  </script>
+
+  <script>
+    // --- configure your business ---
+    const PLACE_ID = "YOUR_PLACE_ID_HERE"; // e.g. ChIJN5Nz71W3j4ARhx5bwpTQEGg
+    const REVIEWS_PER_PAGE = 4;            // 4 to mirror the Trustmary look
+
+    // Accessible star SVG (filled/empty)
+    const Star = (filled=true) => `
+      <svg viewBox="0 0 20 20" aria-hidden="true">
+        <path fill="${filled ? '#f59e0b' : '#e5e7eb'}" d="M10 15.27L4.18 18.18l1.11-6.45L.5 7.27l6.5-.94L10 .5l3 5.83 6.5.94-4.79 4.46 1.11 6.45z"/>
+      </svg>`;
+
+    const clamp = (el, limit=360) => {
+      const t = el.textContent.trim();
+      if (t.length > limit) {
+        el.dataset.full = t;
+        el.textContent = t.slice(0, limit).replace(/\s+\S*$/, '') + '…';
+        el.dataset.clamped = "true";
+        const more = document.createElement('span');
+        more.className = 'grw-more';
+        more.textContent = 'Show more';
+        more.addEventListener('click', () => {
+          if (el.dataset.clamped === "true") {
+            el.textContent = el.dataset.full;
+            el.dataset.clamped = "false";
+            more.textContent = 'Show less';
+          } else {
+            el.textContent = el.dataset.full;
+            clamp(el, limit); // reclamp
+            more.textContent = 'Show more';
+          }
+        });
+        el.after(more);
+      }
+    };
+
+    (async function initReviews() {
+      const lang = navigator.language || 'en';
+      const { Place } = await google.maps.importLibrary('places');
+
+      // Create Place instance and fetch the fields we need (reviews + summary)
+      const place = new Place({ id: PLACE_ID, requestedLanguage: lang });
+      await place.fetchFields({
+        fields: [
+          'displayName', 'googleMapsUri', 'rating', /* overall */
+          'userRatingCount', /* total count (if available) */
+          'reviews' /* array of Review objects */
+        ]
+      }); // docs: Place.fetchFields + reviews field. 
+
+      renderSummary(place);
+      renderCards(place.reviews || []);
+
+      // Buttons
+      const openOnGoogle = document.getElementById('grw-open-on-google');
+      const writeReview   = document.getElementById('grw-write-review');
+      openOnGoogle.href = place.googleMapsUri || '#';
+      // A direct “write review” deep link isn’t exposed in the JS SDK; this goes to the place page.
+      writeReview.href   = place.googleMapsUri || '#';
+    })().catch(console.error);
+
+    function renderSummary(place) {
+      const summary = document.getElementById('grw-summary');
+      const starRow = document.createElement('span');
+      starRow.className = 'grw-stars';
+      // Stars (rounded to half-stars visually by mixing filled/empty)
+      const full = Math.floor(place.rating || 0);
+      const half = (place.rating || 0) - full >= 0.5 ? 1 : 0;
+      for (let i=0;i<full;i++) starRow.insertAdjacentHTML('beforeend', Star(true));
+      if (half) starRow.insertAdjacentHTML('beforeend', Star(true)); // (simple half-step style)
+      for (let i=full+half;i<5;i++) starRow.insertAdjacentHTML('beforeend', Star(false));
+
+      const score = document.createElement('span'); score.className='grw-score';
+      score.textContent = (place.rating || 0).toFixed(1);
+      const count = document.createElement('span'); count.className='grw-count';
+      const total = typeof place.userRatingCount === 'number' ? place.userRatingCount : (place.reviews?.length || 0);
+      count.textContent = `· ${new Intl.NumberFormat().format(total)} reviews`;
+
+      summary.replaceChildren(starRow, score, count);
+    }
+
+    function renderCards(reviews) {
+      const pages = [];
+      for (let i=0;i<reviews.length;i+=REVIEWS_PER_PAGE) {
+        pages.push(reviews.slice(i, i+REVIEWS_PER_PAGE));
+      }
+      const track = document.getElementById('grw-track');
+      const dots  = document.getElementById('grw-dots');
+      track.replaceChildren();
+      dots.replaceChildren();
+
+      if (pages.length === 0) {
+        track.innerHTML = '<div class="grw-page"><p class="grw-powered">No Google reviews available for this place yet.</p></div>';
+        return;
+      }
+
+      pages.forEach((chunk, pageIndex) => {
+        const page = document.createElement('div');
+        page.className = 'grw-page';
+        const grid = document.createElement('div');
+        grid.className = 'grw-grid';
+        page.appendChild(grid);
+
+        chunk.forEach(r => {
+          const card = document.createElement('article');
+          card.className = 'grw-card';
+
+          // Head (stars + relative time)
+          const head = document.createElement('div');
+          head.className = 'grw-card-head';
+          const stars = document.createElement('div'); stars.className='grw-card-stars grw-stars';
+          const rFull = Math.round(r.rating);
+          for (let i=0;i<5;i++) stars.insertAdjacentHTML('beforeend', Star(i<rFull));
+          const when = document.createElement('div'); when.className='grw-time';
+          when.textContent = r.relativePublishTimeDescription || '';
+
+          head.append(stars, when);
+
+          // Text
+          const text = document.createElement('div');
+          text.className = 'grw-text';
+          text.textContent = r.text || '';
+          clamp(text, 360);
+
+          // Author
+          const author = document.createElement('div');
+          author.className = 'grw-author';
+          const img = document.createElement('img');
+          img.className = 'grw-avatar';
+          if (r.authorAttribution?.photoURI) {
+            img.src = r.authorAttribution.photoURI;
+            img.alt = '';
+            img.loading = 'lazy';
+            author.appendChild(img);
+          } else {
+            const holder = document.createElement('div');
+            holder.className='grw-avatar';
+            author.appendChild(holder);
+          }
+          const name = document.createElement('a');
+          name.className='grw-name';
+          name.textContent = r.authorAttribution?.displayName || 'Google user';
+          if (r.authorAttribution?.uri) {
+            name.href = r.authorAttribution.uri;
+            name.target = "_blank"; name.rel = "noopener";
+          }
+          author.appendChild(name);
+
+          card.append(head, text, author);
+          grid.appendChild(card);
+        });
+
+        track.appendChild(page);
+
+        // dot
+        const dot = document.createElement('button');
+        dot.className='grw-dot';
+        dot.type='button';
+        dot.setAttribute('role', 'tab');
+        dot.setAttribute('aria-label', `Go to page ${pageIndex+1}`);
+        dot.addEventListener('click', ()=> goTo(pageIndex));
+        dots.appendChild(dot);
+      });
+
+      // init
+      goTo(0);
+
+      function goTo(i){
+        const trackEl = document.getElementById('grw-track');
+        trackEl.style.transform = `translateX(-${i*100}%)`;
+        [...document.querySelectorAll('.grw-dot')].forEach((d, idx)=>{
+          d.setAttribute('aria-current', idx===i ? 'true' : 'false');
+        });
+      }
+    }
+  </script>
+</body>
+</html>
